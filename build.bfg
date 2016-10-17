@@ -1,9 +1,9 @@
 # -*- python -*-
 
-project("irc")
+project("bbs")
 
 executable(
-    "irc",
+    "bbs",
     files=find_files("src", "*.cpp"),
     compile_options=[
       "-Wall",
@@ -16,8 +16,6 @@ executable(
     packages=[
       boost_package("system"),
 
-      system_package("ssl"),
-      system_package("crypto"),
       system_package("ncurses"),
       system_package("pthread"),
     ],
