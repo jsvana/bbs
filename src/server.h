@@ -18,6 +18,7 @@ class Session : public std::enable_shared_from_this<Session> {
   std::array<char, max_length> data_;
   std::string unfinished_line_;
 
+  virtual void handle_connect() = 0;
   virtual void handle_line(std::string data) = 0;
 
   void read() {
@@ -37,14 +38,15 @@ class Session : public std::enable_shared_from_this<Session> {
       });
   }
 
-  void write(std::size_t length) {
-    boost::asio::write(socket_, boost::asio::buffer(data_, length));
+  void write(const std::string& line) {
+    boost::asio::write(socket_, boost::asio::buffer(line));
   }
 
  public:
   Session(tcp::socket socket) : socket_(std::move(socket)) {}
 
   void start() {
+    handle_connect();
     read();
   }
 };

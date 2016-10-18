@@ -4,6 +4,7 @@
 
 class BbsSession : public Session {
  private:
+  void handle_connect();
   void handle_line(std::string line);
 
  public:
