@@ -1,5 +1,6 @@
 #pragma once
 
+#include "iac.h"
 #include "queue.h"
 
 #include <boost/asio.hpp>
@@ -16,22 +17,25 @@ class Session : public std::enable_shared_from_this<Session> {
   tcp::socket socket_;
   enum { max_length = 1024 };
   std::array<char, max_length> data_;
-  std::string unfinished_line_;
+
+  bool running_ = true;
 
   virtual void handle_connect() = 0;
-  virtual void handle_line(std::string data) = 0;
+  virtual void handle_line(const std::string& data) = 0;
+  virtual void handle_iac(const std::array<char, max_length>& data, std::size_t bytes) = 0;
 
   void read() {
     auto self(shared_from_this());
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
       [this, self](boost::system::error_code ec, std::size_t bytes) {
+        if (!running_) {
+          return;
+        }
         if (!ec) {
-          unfinished_line_ += std::string(data_.data(), bytes);
-          auto end = unfinished_line_.find("\n");
-          if (end != std::string::npos) {
-            std::string line = unfinished_line_.substr(0, end);
-            unfinished_line_ = unfinished_line_.substr(end + 1);
-            handle_line(line);
+          if (data_[0] == (char)iac::IAC) {
+            handle_iac(data_, bytes);
+          } else {
+            handle_line(std::string(data_.data(), bytes));
           }
           read();
         }
