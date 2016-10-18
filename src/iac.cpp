@@ -2,6 +2,14 @@
 
 namespace iac {
 
+const std::string do_cmd(const unsigned char cmd) {
+  return {(char)IAC, (char)DO, (char)cmd};
+}
+
+const std::string dont_cmd(const unsigned char cmd) {
+  return {(char)IAC, (char)DONT, (char)cmd};
+}
+
 uint8_t to_code(char c) {
   uint8_t mask = 0x00ff;
   return c & mask;
