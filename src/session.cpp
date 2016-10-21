@@ -2,6 +2,18 @@
 
 #include <vector>
 
+void BbsSession::enable_client_echo() {
+  write({(char)iac::IAC, (char)iac::WONT, (char)iac::CECHO});
+}
+
+void BbsSession::disable_client_echo() {
+  write({(char)iac::IAC, (char)iac::WILL, (char)iac::CECHO});
+}
+
+void BbsSession::reset_line() {
+  write("\r" + shell::CLEAR_LINE);
+}
+
 void BbsSession::handle_connect() {
   write({(char)iac::IAC, (char)iac::DO, (char)iac::NAWS});
 
@@ -29,7 +41,7 @@ void BbsSession::handle_connect() {
 	};
 
 	for (const auto& line : welcome) {
-    write(line + "\n");
+    write(line + "\r\n");
   }
   write(shell::DEFAULT);
 
@@ -38,8 +50,7 @@ void BbsSession::handle_connect() {
   write(shell::DEFAULT);
 }
 
-void BbsSession::handle_line(const std::string& line) {
-  std::cout << "[RECV] " << line << std::endl;
+void BbsSession::read_line(const std::string& line) {
   unfinished_line_ += line;
   for (unsigned char c : unfinished_line_) {
     std::cout << iac::to_printable_code(c) << " ";
@@ -51,6 +62,31 @@ void BbsSession::handle_line(const std::string& line) {
     unfinished_line_ = unfinished_line_.substr(end + 1);
     handle_line(line);
   }
+}
+
+void BbsSession::handle_line(const std::string& line) {
+  switch (state_) {
+  case BbsState::WAITING_NAME:
+    state_ = BbsState::WAITING_PASSWORD;
+
+    // To account for newline
+    write(shell::cursor_up(1));
+    reset_line();
+
+    write(shell::BOLD);
+    write("     Password: ");
+    write(shell::DEFAULT);
+    disable_client_echo();
+    break;
+  case BbsState::WAITING_PASSWORD:
+    // TODO(jsvana): log in here probably
+    state_ = BbsState::LOGGED_IN;
+
+    write(shell::CLEAR_SCREEN);
+    write(shell::cursor_to(5, 5));
+    write("foobar");
+    break;
+  };
 }
 
 void BbsSession::handle_iac(const std::array<char, max_length>& data, std::size_t bytes) {

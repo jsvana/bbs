@@ -21,7 +21,7 @@ class Session : public std::enable_shared_from_this<Session> {
   bool running_ = true;
 
   virtual void handle_connect() = 0;
-  virtual void handle_line(const std::string& data) = 0;
+  virtual void read_line(const std::string& data) = 0;
   virtual void handle_iac(const std::array<char, max_length>& data, std::size_t bytes) = 0;
 
   void read() {
@@ -35,7 +35,7 @@ class Session : public std::enable_shared_from_this<Session> {
           if (data_[0] == (char)iac::IAC) {
             handle_iac(data_, bytes);
           } else {
-            handle_line(std::string(data_.data(), bytes));
+            read_line(std::string(data_.data(), bytes));
           }
           read();
         }

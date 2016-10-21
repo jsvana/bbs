@@ -24,8 +24,25 @@ unsigned short to_printable_code(char c) {
 namespace shell {
 
 const std::string cursor_to(const uint8_t x, const uint8_t y) {
-  // Attempt at RFC1043. Doesn't appear to work (client responds IAC WONT DET).
-  return {(char)iac::IAC, (char)iac::SB, (char)iac::DET, (char)iac::MOVE_CURSOR, (char)y, (char)x, (char)iac::IAC, (char)iac::SE};
+  std::string cmd = {START, '['};
+  for (char c : std::to_string(y)) {
+    cmd += c;
+  }
+  cmd += ';';
+  for (char c : std::to_string(x)) {
+    cmd += c;
+  }
+  cmd += 'H';
+  return cmd;
+}
+
+const std::string cursor_up(const uint8_t n) {
+  std::string cmd = {START, '['};
+  for (char c : std::to_string(n)) {
+    cmd += c;
+  }
+  cmd += 'A';
+  return cmd;
 }
 
 } // namespace shell

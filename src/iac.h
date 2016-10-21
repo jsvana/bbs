@@ -6,7 +6,9 @@
 namespace iac {
 
 const unsigned char IS = 0;          // Sub-negotiation IS command
-const unsigned char SEND = 1;        // Sub-negotiation SEND command
+
+// Apparently ECHO is reserved so we use CECHO
+const unsigned char CECHO = 1;
 
 const unsigned char MOVE_CURSOR = 5; // Moves cursor to point
 const unsigned char DET = 20;        // Data Entry Terminal extensions
@@ -49,5 +51,6 @@ const std::string BLINK = {START, '[', '5', 'm'};
 const std::string BOLD = {START, '[', '1', 'm'};
 
 const std::string cursor_to(const uint8_t x, const uint8_t y);
+const std::string cursor_up(const uint8_t n);
 
 } // namespace shell
