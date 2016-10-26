@@ -35,20 +35,20 @@ unsigned short to_printable_code(char c);
 
 namespace shell {
 
-const char START = 27;
+const std::string START = {27};
 
-const std::string CURSOR_TOP_LEFT = {START, '[', 'f'};
+const std::string CURSOR_TOP_LEFT = START + "[f";
 
-const std::string CLEAR_SCREEN = {START, '[', '2', 'J'};
-const std::string CLEAR_LINE = {START, '[', '2', 'K'};
+const std::string CLEAR_SCREEN = START + "[2J";
+const std::string CLEAR_LINE = START + "[2K";
 
 // Colors
-const std::string GREEN = {START, '[', '0', ';', '3', '2', 'm'};
-const std::string DEFAULT = {START, '[', '0', 'm'};
+const std::string GREEN = START + "[0;32m";
+const std::string DEFAULT = START + "[0m";
 
 // Attributes
-const std::string BLINK = {START, '[', '5', 'm'};
-const std::string BOLD = {START, '[', '1', 'm'};
+const std::string BLINK = START + "[5m";
+const std::string BOLD = START + "[1m";
 
 const std::string cursor_to(const uint8_t x, const uint8_t y);
 const std::string cursor_up(const uint8_t n);

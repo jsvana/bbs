@@ -24,7 +24,7 @@ unsigned short to_printable_code(char c) {
 namespace shell {
 
 const std::string cursor_to(const uint8_t x, const uint8_t y) {
-  std::string cmd = {START, '['};
+  std::string cmd = START + "[";
   for (char c : std::to_string(y)) {
     cmd += c;
   }
@@ -37,7 +37,7 @@ const std::string cursor_to(const uint8_t x, const uint8_t y) {
 }
 
 const std::string cursor_up(const uint8_t n) {
-  std::string cmd = {START, '['};
+  std::string cmd = START + "[";
   for (char c : std::to_string(n)) {
     cmd += c;
   }
