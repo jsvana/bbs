@@ -1,5 +1,6 @@
 #include "server.h"
 #include "session.h"
+#include "store.h"
 
 #include <iostream>
 
@@ -8,6 +9,8 @@ int main(int argc, char** argv) {
     std::cerr << "Usage: " << argv[0] << " <port>\n";
     return 1;
   }
+
+  store::init("testdb");
 
   BbsServer<BbsSession> server(std::atoi(argv[1]));
 

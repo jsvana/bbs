@@ -2,6 +2,10 @@
 
 #include "server.h"
 
+#include "user.h"
+
+#include <memory>
+
 enum class BbsState {
   WAITING_NAME,
   WAITING_PASSWORD,
@@ -11,6 +15,8 @@ enum class BbsState {
 class BbsSession : public Session {
  private:
   std::string unfinished_line_;
+
+  std::unique_ptr<User> user_;
 
   BbsState state_ = BbsState::WAITING_NAME;
 

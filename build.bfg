@@ -16,7 +16,7 @@ executable(
     packages=[
       boost_package("system"),
 
-      system_package("ncurses"),
       system_package("pthread"),
+      system_package("rocksdb"),
     ],
 )

@@ -69,6 +69,8 @@ void BbsSession::handle_line(const std::string& line) {
   case BbsState::WAITING_NAME:
     state_ = BbsState::WAITING_PASSWORD;
 
+    user_ = std::make_unique<User>(line);
+
     // To account for newline
     write(shell::cursor_up(1));
     reset_line();
@@ -78,13 +80,17 @@ void BbsSession::handle_line(const std::string& line) {
     write(shell::DEFAULT);
     disable_client_echo();
     break;
-  case BbsState::WAITING_PASSWORD:
-    // TODO(jsvana): log in here probably
-    state_ = BbsState::LOGGED_IN;
 
-    write(shell::CLEAR_SCREEN);
-    write(shell::cursor_to(5, 5));
-    write("foobar");
+  case BbsState::WAITING_PASSWORD:
+    if (user_->authenticate(line)) {
+      state_ = BbsState::LOGGED_IN;
+
+      write(shell::CLEAR_SCREEN);
+      write(shell::cursor_to(5, 5));
+      write("foobar");
+    } else {
+      write("Incorrect password");
+    }
     break;
   };
 }
