@@ -17,68 +17,33 @@ void BbsSession::reset_line() {
 void BbsSession::handle_connect() {
   write({(char)iac::IAC, (char)iac::DO, (char)iac::NAWS});
 
-  write(shell::CLEAR_SCREEN);
-  write(shell::CURSOR_TOP_LEFT);
-  write(shell::GREEN);
-	std::vector<std::string> welcome = {
-		{"                     ^    ^                                            "},
-		{"                    / \\  //\\                                         "},
-		{"      |\\___/|      /   \\//  .\\                                      "},
-		{"      /O  O  \\__  /    //  | \\ \\                                    "},
-		{"     /     /  \\/_/    //   |  \\  \\                                  "},
-		{"     @___@'    \\/_   //    |   \\   \\                                "},
-		{"        |       \\/_ //     |    \\    \\                              "},
-		{"        |        \\///      |     \\     \\                            "},
-		{"       _|_ /   )  //       |      \\     _\\                           "},
-		{"      '/,_ _ _/  ( ; -.    |    _ _\\.-~        .-~~~^-.               "},
-		{"      ,-{        _      `-.|.-~-.           .~         `.              "},
-		{"       '/\\      /                 ~-. _ .-~      .-~^-.  \\           "},
-		{"          `.   {            }                   /      \\  \\          "},
-		{"        .----~-.\\        \\-'                 .~         \\  `. \\^-. "},
-		{"       ///.----..>    c   \\             _ -~             `.  ^-`   ^-_"},
-		{"         ///-._ _ _ _ _ _ _}^ - - - - ~                     ~--,   .-~ "},
-		{"                                                              /.-'     "},
-	};
-
-	for (const auto& line : welcome) {
-    write(line + "\r\n");
-  }
-  write(shell::DEFAULT);
-
-  write(shell::BOLD);
-  write("     Name: ");
-  write(shell::DEFAULT);
+  write_template("../src/templates/index.scr", {});
 }
 
 void BbsSession::read_line(const std::string& line) {
   unfinished_line_ += line;
-  for (unsigned char c : unfinished_line_) {
-    std::cout << iac::to_printable_code(c) << " ";
-  }
-  std::cout << std::endl;
-  auto end = unfinished_line_.find("\n");
+  auto end = unfinished_line_.find("\r\n");
   if (end != std::string::npos) {
     std::string line = unfinished_line_.substr(0, end);
-    unfinished_line_ = unfinished_line_.substr(end + 1);
+    unfinished_line_ = unfinished_line_.substr(end + 2);
     handle_line(line);
   }
+}
+
+void BbsSession::prompt_password() {
+  write(shell::BOLD);
+  write("Password: ");
+  write(shell::DEFAULT);
+  disable_client_echo();
 }
 
 void BbsSession::handle_line(const std::string& line) {
   switch (state_) {
   case BbsState::WAITING_NAME:
     state_ = BbsState::WAITING_PASSWORD;
-
+    std::cout << "USERNAME: " << line << " AFTER" << std::endl;
     user_ = std::make_unique<User>(line);
-
-    // To account for newline
-    write(shell::cursor_up(1));
-    reset_line();
-
-    write(shell::BOLD);
-    write("     Password: ");
-    write(shell::DEFAULT);
-    disable_client_echo();
+    prompt_password();
     break;
 
   case BbsState::WAITING_PASSWORD:
@@ -89,7 +54,8 @@ void BbsSession::handle_line(const std::string& line) {
       write(shell::cursor_to(5, 5));
       write("foobar");
     } else {
-      write("Incorrect password");
+      write("\r\nIncorrect password\r\n");
+      prompt_password();
     }
     break;
   };
@@ -97,10 +63,8 @@ void BbsSession::handle_line(const std::string& line) {
 
 void BbsSession::handle_iac(const std::array<char, max_length>& data, std::size_t bytes) {
   std::size_t i = 0;
-  //int sb_count = 0;
   while (i < bytes) {
     unsigned char c = data[i];
-    //std::cout << "CHAR " << (unsigned short)iac::to_code(c) << std::endl;
     if (c == iac::WILL || c == iac::WONT || c == iac::DO || c == iac::DONT) {
       std::cout << "Client ";
       switch (c) {

@@ -26,6 +26,7 @@ class BbsSession : public Session {
   void enable_client_echo();
   void disable_client_echo();
   void reset_line();
+  void prompt_password();
 
   void handle_connect();
   void read_line(const std::string& line);

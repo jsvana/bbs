@@ -1,8 +1,11 @@
 #include "server.h"
 #include "session.h"
 #include "store.h"
+#include "template.h"
 
 #include <iostream>
+#include <string>
+#include <unordered_map>
 
 int main(int argc, char** argv) {
   if (argc != 2) {

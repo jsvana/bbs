@@ -2,6 +2,7 @@
 
 #include "iac.h"
 #include "queue.h"
+#include "template.h"
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -9,6 +10,7 @@
 #include <array>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 
 using boost::asio::ip::tcp;
 
@@ -44,6 +46,12 @@ class Session : public std::enable_shared_from_this<Session> {
 
   void write(const std::string& line) {
     boost::asio::write(socket_, boost::asio::buffer(line));
+  }
+
+  void write_template(const std::string& path, const std::unordered_map<std::string, std::string>& vars) {
+    Template t(path);
+    t.calculate_body(vars);
+    write(t.body());
   }
 
  public:

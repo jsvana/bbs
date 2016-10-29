@@ -10,7 +10,7 @@ executable(
       "-Wextra",
       "-pedantic",
       "-Wno-deprecated-declarations",
-      "-std=c++14",
+      "-std=c++1z",
       "-ggdb",
     ],
     packages=[
