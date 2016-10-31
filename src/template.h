@@ -17,7 +17,14 @@ class Template {
   };
 
   const std::unordered_map<std::string, std::string> colors_ = {
+    // TODO(jsvana): make this not suck
+    {"black", shell::BLACK},
+    {"red", shell::RED},
     {"green", shell::GREEN},
+    {"orange", shell::ORANGE},
+    {"blue", shell::BLUE},
+    {"purple", shell::PURPLE},
+    {"teal", shell::TEAL},
     {"default", shell::DEFAULT},
   };
 

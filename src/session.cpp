@@ -41,7 +41,6 @@ void BbsSession::handle_line(const std::string& line) {
   switch (state_) {
   case BbsState::WAITING_NAME:
     state_ = BbsState::WAITING_PASSWORD;
-    std::cout << "USERNAME: " << line << " AFTER" << std::endl;
     user_ = std::make_unique<User>(line);
     prompt_password();
     break;
@@ -52,7 +51,7 @@ void BbsSession::handle_line(const std::string& line) {
 
       write(shell::CLEAR_SCREEN);
       write(shell::cursor_to(5, 5));
-      write("foobar");
+      write("Logged in");
     } else {
       write("\r\nIncorrect password\r\n");
       prompt_password();
