@@ -56,20 +56,16 @@ const std::string attr(const Attribute attr) {
 }
 
 const std::string color(const Color fg_color, const Color bg_color) {
-  std::string cmd = START + '[';
-  if (bg_color != Color::NONE) {
-    cmd += '4';
-    for (char c : std::to_string(static_cast<unsigned int>(bg_color))) {
-      cmd += c;
-    }
-  } else {
-    cmd += '0';
-  }
-  cmd += ";3";
+  std::string cmd = START + "[3";
   for (char c : std::to_string(static_cast<unsigned int>(fg_color))) {
     cmd += c;
   }
-  std::cout << cmd.substr(1) << std::endl;
+  if (bg_color != Color::NONE) {
+    cmd += ";4";
+    for (char c : std::to_string(static_cast<unsigned int>(bg_color))) {
+      cmd += c;
+    }
+  }
   return cmd + 'm';
 }
 
