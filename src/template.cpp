@@ -3,15 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-std::experimental::optional<std::string> Template::get_code(const std::unordered_map<std::string, std::string>& map, const std::string& command) {
-  auto iter = map.find(command);
-  if (iter == map.end()) {
-    return {};
-  }
-
-  return iter->second;
-}
-
 void Template::calculate_body(const std::unordered_map<std::string, std::string>& vars) {
   std::ifstream template_f(path_);
 
@@ -48,18 +39,22 @@ void Template::calculate_body(const std::unordered_map<std::string, std::string>
           continue;
         }
         auto arg = line.substr(start);
-        std::experimental::optional<std::string> code;
         if (cmd == "color") {
-          code = get_code(colors_, arg);
+          auto code = get_code<shell::Color>(colors_, arg);
+          if (code) {
+            color_ = *code;
+            // TODO(jsvana): support background colors
+            body_ += color(color_, shell::Color::NONE);
+          }
         } else if (cmd == "attr") {
-          code = get_code(attributes_, arg);
+          auto code = get_code<shell::Attribute>(attributes_, arg);
+          if (code) {
+            attribute_ = *code;
+            body_ += attr(attribute_);
+          }
         } else if (cmd == "prompt") {
           body_ += line.substr(start) + " ";
           continue;
-        }
-
-        if (code) {
-          body_ += *code;
         }
       }
     } else {

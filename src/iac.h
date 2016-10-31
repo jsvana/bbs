@@ -42,23 +42,30 @@ const std::string CURSOR_TOP_LEFT = START + "[f";
 const std::string CLEAR_SCREEN = START + "[2J";
 const std::string CLEAR_LINE = START + "[2K";
 
-// Colors
-// TODO(jsvana): constexpr generate all colors
-// TODO(jsvana): dynamic attributes
-const std::string BLACK = START + "[0;30m";
-const std::string RED = START + "[0;31m";
-const std::string GREEN = START + "[0;32m";
-const std::string ORANGE = START + "[0;33m";
-const std::string BLUE = START + "[0;34m";
-const std::string PURPLE = START + "[0;35m";
-const std::string TEAL = START + "[0;36m";
-const std::string DEFAULT = START + "[0m";
+enum class Color : int {
+  NONE = -1,
 
-// Attributes
-const std::string BLINK = START + "[5m";
-const std::string BOLD = START + "[1m";
+  BLACK = 0,
+  RED = 1,
+  GREEN = 2,
+  YELLOW = 3,
+  BLUE = 4,
+  MAGENTA = 5,
+  CYAN = 6,
+  WHITE = 7,
+};
+
+enum class Attribute : unsigned int {
+  NONE = 0,
+  BOLD = 1,
+  BLINK = 5,
+};
 
 const std::string cursor_to(const uint8_t x, const uint8_t y);
 const std::string cursor_up(const uint8_t n);
+
+const std::string attr(const Attribute attr);
+
+const std::string color(const Color fg_color, const Color bg_color = Color::NONE);
 
 } // namespace shell

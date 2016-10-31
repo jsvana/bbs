@@ -1,6 +1,6 @@
 !clear_screen
 !cursor_top_left
-!color orange
+!color yellow
                      ^    ^
                     / \  //\
       |\___/|      /   \//  .\
@@ -18,7 +18,7 @@
        ///.----..>    c   \             _ -~             `.  ^-`   ^-
          ///-._ _ _ _ _ _ _}^ - - - - ~                     ~--,   .-~
                                                               /.-'
-!color default
+!color white
 !attr bold
 !prompt Name:
-!attr default
+!attr clear

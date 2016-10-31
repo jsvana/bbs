@@ -31,9 +31,9 @@ void BbsSession::read_line(const std::string& line) {
 }
 
 void BbsSession::prompt_password() {
-  write(shell::BOLD);
+  write(attr(shell::Attribute::BOLD));
   write("Password: ");
-  write(shell::DEFAULT);
+  write(attr(shell::Attribute::NONE));
   disable_client_echo();
 }
 

@@ -1,5 +1,7 @@
 #include "iac.h"
 
+#include <iostream>
+
 namespace iac {
 
 const std::string do_cmd(const unsigned char cmd) {
@@ -24,7 +26,7 @@ unsigned short to_printable_code(char c) {
 namespace shell {
 
 const std::string cursor_to(const uint8_t x, const uint8_t y) {
-  std::string cmd = START + "[";
+  std::string cmd = START + '[';
   for (char c : std::to_string(y)) {
     cmd += c;
   }
@@ -37,12 +39,38 @@ const std::string cursor_to(const uint8_t x, const uint8_t y) {
 }
 
 const std::string cursor_up(const uint8_t n) {
-  std::string cmd = START + "[";
+  std::string cmd = START + '[';
   for (char c : std::to_string(n)) {
     cmd += c;
   }
   cmd += 'A';
   return cmd;
+}
+
+const std::string attr(const Attribute attr) {
+  std::string cmd = START + '[';
+  for (char c : std::to_string(static_cast<int>(attr))) {
+    cmd += c;
+  }
+  return cmd + 'm';
+}
+
+const std::string color(const Color fg_color, const Color bg_color) {
+  std::string cmd = START + '[';
+  if (bg_color != Color::NONE) {
+    cmd += '4';
+    for (char c : std::to_string(static_cast<unsigned int>(bg_color))) {
+      cmd += c;
+    }
+  } else {
+    cmd += '0';
+  }
+  cmd += ";3";
+  for (char c : std::to_string(static_cast<unsigned int>(fg_color))) {
+    cmd += c;
+  }
+  std::cout << cmd.substr(1) << std::endl;
+  return cmd + 'm';
 }
 
 } // namespace shell
