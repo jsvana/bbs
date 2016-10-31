@@ -23,10 +23,16 @@ class BbsSession : public Session {
   uint16_t term_width = 0;
   uint16_t term_height = 0;
 
+  // Auth
+  unsigned int attempts_ = 0;
+  unsigned int MAX_ATTEMPTS = 3;
+
   void enable_client_echo();
   void disable_client_echo();
   void reset_line();
   void prompt_password();
+
+  void enter();
 
   void handle_connect();
   void read_line(const std::string& line);

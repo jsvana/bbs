@@ -35,6 +35,8 @@ unsigned short to_printable_code(char c);
 
 namespace shell {
 
+const std::string BLOCK = "\u2588";
+
 const std::string START = {27};
 
 const std::string CURSOR_TOP_LEFT = START + "[f";

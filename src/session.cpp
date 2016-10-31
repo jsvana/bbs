@@ -16,7 +16,11 @@ void BbsSession::reset_line() {
 
 void BbsSession::handle_connect() {
   write({(char)iac::IAC, (char)iac::DO, (char)iac::NAWS});
+  enter();
+}
 
+void BbsSession::enter() {
+  enable_client_echo();
   write_template("../src/templates/index.scr", {});
 }
 
@@ -53,6 +57,12 @@ void BbsSession::handle_line(const std::string& line) {
       write(shell::cursor_to(5, 5));
       write("Logged in");
     } else {
+      attempts_++;
+      if (attempts_ == MAX_ATTEMPTS) {
+        state_ = BbsState::WAITING_NAME;
+        enter();
+        return;
+      }
       write("\r\nIncorrect password\r\n");
       prompt_password();
     }
