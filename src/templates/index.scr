@@ -1,6 +1,8 @@
+# Reset and bring cursor to top left
 !clear_screen
 !cursor_top_left
 !color yellow
+# Print out some wicked ASCII art
                      ^    ^
                     / \  //\
       |\___/|      /   \//  .\

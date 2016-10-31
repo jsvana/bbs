@@ -57,6 +57,9 @@ void Template::calculate_body(const std::unordered_map<std::string, std::string>
           continue;
         }
       }
+    } else if (line[0] == '#') {
+      // Comments in the template files
+      continue;
     } else {
       body_ += line + "\r\n";
     }
